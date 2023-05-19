@@ -30,7 +30,7 @@ int mod(int a, int b){
 
 void DrawLevel(enum Tiles* lvl){
 
-	const Color col[] = {GRAY, BLUE, GREEN};
+	const Color col[] = {GRAY, GREEN};
 	for (size_t i = 0; i < (levelSideLength * levelSideLength); i++) {
 		if(lvl[i] == NOTHING)
 			continue;
@@ -48,11 +48,10 @@ int GetFinalSlidingPointInDirection(int starting_point, enum Tiles* level, enum 
     int i = 0;
     const int levelSize = levelSideLength * levelSideLength;
     const int offsets[] = {-levelSideLength, -1, 1, levelSideLength};
-    while(i < levelSize && (i + starting_point) >= 0){
+    while((i + starting_point) < levelSize && (i + starting_point) >= 0){
         if(level[starting_point + i] == WALL)
             break;
         i = i + offsets[dir];
-        fprintf(stderr, "Progression:%d", i);
     }
     return starting_point + i - offsets[dir];
 }
@@ -111,31 +110,36 @@ int main(void){
 			mode = NOTHING;
 
     	enum Dir direction = -1;
-    	bool player_moved = false;
+    	bool player_moved = true;
 
 
         if(IsKeyPressed(KEY_W))
 		{
     		direction = UP;
-    		player_moved = true;
+    		
         }		
-        if(IsKeyPressed(KEY_A))
+        else if(IsKeyPressed(KEY_A))
 		{
     		direction = LEFT;
-    		player_moved = true;
+    		
         }		
-        if(IsKeyPressed(KEY_S))
+        else if(IsKeyPressed(KEY_S))
 		{
     		direction = DOWN;
-    		player_moved = true;
+    		
         }		
-        if(IsKeyPressed(KEY_D))
+        else if(IsKeyPressed(KEY_D))
 		{
     		direction = RIGHT;
-    		player_moved = true;
+    		
+        }
+        else 
+        {
+            player_moved = false;
         }
 
 
+        bool player_won = true;
         if(player_moved)
         {
             for(size_t i = 0;i < players_size; i++)
@@ -148,11 +152,18 @@ int main(void){
         for(size_t i = 0;i < players_size; i++)
         {
             if(players[i] >= 0)
-                DrawRectangle( mod(players[i], levelSideLength) * tilesSizeInPixels, (players[i] / levelSideLength) * tilesSizeInPixels, tilesSizeInPixels, tilesSizeInPixels, BLUE);
+            {
+                // Draw Players
+                DrawRectangle( mod(players[i], levelSideLength) * tilesSizeInPixels + 1, (players[i] / levelSideLength) * tilesSizeInPixels + 1, tilesSizeInPixels - 2, tilesSizeInPixels - 2, BLUE);
+
+                // Check if all players are on a WIN block
+                player_won = (level[players[i]] == WIN);
+            }
         }
 
 		DrawLevel(level);
 		EndDrawing();
+
 		//----------------------------------------------------------------------------------
 	}
 
