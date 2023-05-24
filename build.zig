@@ -6,11 +6,12 @@ pub fn build(b: *std.build.Builder) void {
     const mode = b.standardReleaseOptions();
 
     const exe = b.addExecutable("HIVE", null);
-    const flags = &[_][]const u8{};
+    const flags = &[_][]const u8{"-g"};
 
     exe.setTarget(target);
     exe.setBuildMode(mode);
     exe.addCSourceFile("main.c", flags);
+    exe.addCSourceFile("level.c", flags);
     exe.addIncludePath("include");
     exe.addLibraryPath("lib");
     exe.linkSystemLibrary("raylib");
