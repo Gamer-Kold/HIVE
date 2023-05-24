@@ -26,8 +26,8 @@ struct LevelEditorState{
 
 int GetFinalSlidingPointInDirection(int starting_point, enum Tiles *level,
                                     enum Dir dir); 
-void DrawLevel(struct LevelState *state);
+void DrawLevel(struct LevelState state);
 void UpdateLevelState(struct LevelState *state);
 void LevelEditorUpdate(struct LevelEditorState *state);
-
+void LoadLevel(struct LevelState *level);
 #endif // level_h_INCLUDED

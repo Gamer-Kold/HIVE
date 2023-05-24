@@ -1,6 +1,47 @@
 #include "level.h"
 #include <raylib.h>
 #include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+void SaveLevel(struct LevelState state)
+{
+    FILE *level_file = fopen("level.txt", "w");
+    if(level_file == NULL)
+    {
+        fprintf(stderr, "error loading file");  
+        return;
+    }
+
+    for(int i = 0; i < 5; i++)
+        fprintf(level_file, "%d\n", state.players[i]); 
+
+    for (int i = 0; i < (LEVEL_SIDE_LENGTH * LEVEL_SIDE_LENGTH); i++) {
+        fprintf(level_file, "%d\n", state.level[i]);
+    }
+
+    fclose(level_file);
+}
+
+void LoadLevel(struct LevelState *state)
+{
+
+    FILE *level_file = fopen("level.txt", "r");
+    if(level_file == NULL)
+    {
+        fprintf(stderr, "error loading file");  
+        return;
+    }
+
+    for(int i = 0; i < 5; i++)
+        fscanf(level_file, "%d\n", state->players + i);
+
+    for (int i = 0; i < (LEVEL_SIDE_LENGTH * LEVEL_SIDE_LENGTH); i++) {
+        fscanf(level_file, "%d\n", (state->level + i));
+    }
+
+    fclose(level_file);
+}
 
 void LevelEditorUpdate(struct LevelEditorState *state) {
   // memory safety is a bitch
@@ -8,6 +49,7 @@ void LevelEditorUpdate(struct LevelEditorState *state) {
   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && GetMouseX() > 0 &&
       GetMouseX() < state->levelScreenLength && GetMouseY() > 0 &&
       GetMouseY() < state->levelScreenLength) {
+    SaveLevel(level_state);
     int index = (GetMouseY() / TILE_SIZE_PIXELS) * LEVEL_SIDE_LENGTH +
                 (GetMouseX() / TILE_SIZE_PIXELS);
     if (state->player_mode) {
@@ -57,10 +99,10 @@ int mod(int a, int b) {
   return (a - (div * b));
 }
 
-void DrawLevel(struct LevelState *state) {
+void DrawLevel(struct LevelState state) {
 
   const Color col[] = {GRAY, GREEN};
-  enum Tiles *lvl = state->level;
+  enum Tiles *lvl = state.level;
   for (size_t i = 0; i < (LEVEL_SIDE_LENGTH * LEVEL_SIDE_LENGTH); i++) {
     if (lvl[i] == NOTHING)
       continue;
@@ -72,11 +114,11 @@ void DrawLevel(struct LevelState *state) {
                   TILE_SIZE_PIXELS, TILE_SIZE_PIXELS, col[lvl[i] - 1]);
   }
   for (size_t i = 0; i < PLAYER_ARRAY_SIZE; i++) {
-    if (state->players[i] >= 0) {
+    if (state.players[i] >= 0) {
       // Draw Players
       DrawRectangle(
-          mod(state->players[i], LEVEL_SIDE_LENGTH) * TILE_SIZE_PIXELS + 1,
-          (state->players[i] / LEVEL_SIDE_LENGTH) * TILE_SIZE_PIXELS + 1,
+          mod(state.players[i], LEVEL_SIDE_LENGTH) * TILE_SIZE_PIXELS + 1,
+          (state.players[i] / LEVEL_SIDE_LENGTH) * TILE_SIZE_PIXELS + 1,
           TILE_SIZE_PIXELS - 2, TILE_SIZE_PIXELS - 2, BLUE);
 
       }
@@ -130,3 +172,6 @@ void UpdateLevelState(struct LevelState *state) {
     }
   }
 }
+
+
+

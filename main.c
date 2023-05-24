@@ -20,6 +20,7 @@ int main(void) {
   }
 
   struct LevelState level_state = {level, {-1, -1, -1, -1, -1}};
+  LoadLevel(&level_state);
   struct LevelEditorState editor_state = {WALL, false, 0, level_state, 1000};
   InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
@@ -41,7 +42,7 @@ int main(void) {
     ClearBackground(RAYWHITE);
 
     LevelEditorUpdate(&editor_state);
-    DrawLevel(&(editor_state.level_state));
+    DrawLevel(editor_state.level_state);
     EndDrawing();
 
     //----------------------------------------------------------------------------------
