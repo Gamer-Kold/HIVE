@@ -42,6 +42,7 @@ int main(void) {
     ClearBackground(RAYWHITE);
 
     LevelEditorUpdate(&editor_state);
+    UpdateLevelState(&(editor_state.level_state));
     DrawLevel(editor_state.level_state);
     EndDrawing();
 

@@ -156,12 +156,6 @@ void UpdateLevelState(struct LevelState *state) {
 
   for (size_t i = 0; i < PLAYER_ARRAY_SIZE; i++) {
     if (state->players[i] >= 0) {
-      // Draw Players
-      DrawRectangle(
-          mod(state->players[i], LEVEL_SIDE_LENGTH) * TILE_SIZE_PIXELS + 1,
-          (state->players[i] / LEVEL_SIDE_LENGTH) * TILE_SIZE_PIXELS + 1,
-          TILE_SIZE_PIXELS - 2, TILE_SIZE_PIXELS - 2, BLUE);
-
       // Check if all players are on a WIN block
       if (player_won) {
         player_won = (state->level[state->players[i]] == WIN);
