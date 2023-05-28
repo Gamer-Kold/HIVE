@@ -16,6 +16,7 @@ struct LevelState{
 struct LevelEditorState{
     enum Tiles mode;
     bool player_mode;
+    int level_players[5]; // don't need to store this after level has begun, only when saving level
     int player_index;
     struct LevelState level_state;
     int levelScreenLength;

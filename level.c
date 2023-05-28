@@ -4,9 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void SaveLevel(struct LevelState state)
+void SaveLevel(struct LevelEditorState state)
 {
     FILE *level_file = fopen("level.txt", "w");
+    struct LevelState level_state = state.level_state;
     if(level_file == NULL)
     {
         fprintf(stderr, "error loading file");  
@@ -14,10 +15,10 @@ void SaveLevel(struct LevelState state)
     }
 
     for(int i = 0; i < 5; i++)
-        fprintf(level_file, "%d\n", state.players[i]); 
+        fprintf(level_file, "%d\n", state.level_players[i]); 
 
     for (int i = 0; i < (LEVEL_SIDE_LENGTH * LEVEL_SIDE_LENGTH); i++) {
-        fprintf(level_file, "%d\n", state.level[i]);
+        fprintf(level_file, "%d\n", level_state.level[i]);
     }
 
     fclose(level_file);
@@ -43,17 +44,17 @@ void LoadLevel(struct LevelState *state)
     fclose(level_file);
 }
 
+// TODO: refactor this so it doesn't use a pointer, it's kind of ew, and probably really bad for performance
 void LevelEditorUpdate(struct LevelEditorState *state) {
   // memory safety is a bitch
   struct LevelState level_state = state->level_state;
   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && GetMouseX() > 0 &&
       GetMouseX() < state->levelScreenLength && GetMouseY() > 0 &&
       GetMouseY() < state->levelScreenLength) {
-    SaveLevel(level_state);
     int index = (GetMouseY() / TILE_SIZE_PIXELS) * LEVEL_SIDE_LENGTH +
                 (GetMouseX() / TILE_SIZE_PIXELS);
     if (state->player_mode) {
-      level_state.players[state->player_index] = index;
+      state->level_players[state->player_index] = index;
       if (state->player_index == 4) {
         state->player_index = 0;
       } else {
@@ -61,6 +62,8 @@ void LevelEditorUpdate(struct LevelEditorState *state) {
       }
     } else
       level_state.level[index] = state->mode;
+    SaveLevel(*state);
+    LoadLevel(&(state->level_state));
   }
 
   if (IsKeyDown(KEY_ONE)) {
@@ -76,7 +79,6 @@ void LevelEditorUpdate(struct LevelEditorState *state) {
     state->player_mode = true;
   }
 
-  state->level_state = level_state;
 }
 
 int GetFinalSlidingPointInDirection(int starting_point, enum Tiles *level,

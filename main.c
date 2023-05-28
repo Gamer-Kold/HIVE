@@ -21,7 +21,10 @@ int main(void) {
 
   struct LevelState level_state = {level, {-1, -1, -1, -1, -1}};
   LoadLevel(&level_state);
-  struct LevelEditorState editor_state = {WALL, false, 0, level_state, 1000};
+  struct LevelEditorState editor_state = {WALL, false, {-1, -1, -1, -1, -1}, 0, level_state, 1000};
+  for (int i = 0; i < 5; i++) {
+    editor_state.level_players[i] = editor_state.level_state.players[i];
+  }
   InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
   // Set our game to run at 60 frames-per-second
