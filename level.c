@@ -4,10 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void SaveLevel(struct LevelEditorState state)
+void SaveLevel(LevelEditorState state)
 {
     FILE *level_file = fopen("level.txt", "w");
-    struct LevelState level_state = state.level_state;
+    LevelState level_state = state.level_state;
     if(level_file == NULL)
     {
         fprintf(stderr, "error loading file");  
@@ -24,7 +24,7 @@ void SaveLevel(struct LevelEditorState state)
     fclose(level_file);
 }
 
-void LoadLevel(struct LevelState *state)
+void LoadLevel(LevelState *state)
 {
 
     FILE *level_file = fopen("level.txt", "r");
@@ -45,9 +45,9 @@ void LoadLevel(struct LevelState *state)
 }
 
 // TODO: refactor this so it doesn't use a pointer, it's kind of ew, and probably really bad for performance
-void LevelEditorUpdate(struct LevelEditorState *state) {
+void LevelEditorUpdate(LevelEditorState *state) {
   // memory safety is a bitch
-  struct LevelState level_state = state->level_state;
+  LevelState level_state = state->level_state;
   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && GetMouseX() > 0 &&
       GetMouseX() < state->levelScreenLength && GetMouseY() > 0 &&
       GetMouseY() < state->levelScreenLength) {
@@ -81,8 +81,8 @@ void LevelEditorUpdate(struct LevelEditorState *state) {
 
 }
 
-int GetFinalSlidingPointInDirection(int starting_point, enum Tiles *level,
-                                    enum Dir dir) {
+int GetFinalSlidingPointInDirection(int starting_point, Tiles *level,
+                                    Dir dir) {
 
   int i = 0;
   const int levelSize = LEVEL_SIDE_LENGTH * LEVEL_SIDE_LENGTH;
@@ -95,21 +95,16 @@ int GetFinalSlidingPointInDirection(int starting_point, enum Tiles *level,
   return starting_point + i - offsets[dir];
 }
 
-int mod(int a, int b) {
-  int div = a / b;
 
-  return (a - (div * b));
-}
-
-void DrawLevel(struct LevelState state) {
+void DrawLevel(LevelState state) {
 
   const Color col[] = {GRAY, GREEN};
-  enum Tiles *lvl = state.level;
+  Tiles *lvl = state.level;
   for (size_t i = 0; i < (LEVEL_SIDE_LENGTH * LEVEL_SIDE_LENGTH); i++) {
     if (lvl[i] == NOTHING)
       continue;
 
-    int x = mod(i, LEVEL_SIDE_LENGTH);
+    int x = i % LEVEL_SIDE_LENGTH;
     int y = i / LEVEL_SIDE_LENGTH;
 
     DrawRectangle(x * TILE_SIZE_PIXELS, y * TILE_SIZE_PIXELS,
@@ -119,7 +114,7 @@ void DrawLevel(struct LevelState state) {
     if (state.players[i] >= 0) {
       // Draw Players
       DrawRectangle(
-          mod(state.players[i], LEVEL_SIDE_LENGTH) * TILE_SIZE_PIXELS + 1,
+          (state.players[i] % LEVEL_SIDE_LENGTH) * TILE_SIZE_PIXELS + 1,
           (state.players[i] / LEVEL_SIDE_LENGTH) * TILE_SIZE_PIXELS + 1,
           TILE_SIZE_PIXELS - 2, TILE_SIZE_PIXELS - 2, BLUE);
 
@@ -127,8 +122,8 @@ void DrawLevel(struct LevelState state) {
     }
 }
 
-void UpdateLevelState(struct LevelState *state) {
-  enum Dir direction = -1;
+void UpdateLevelState(LevelState *state) {
+  Dir direction = -1;
   bool player_moved = true;
 
   if (IsKeyPressed(KEY_W)) {
