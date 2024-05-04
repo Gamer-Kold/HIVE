@@ -1,6 +1,9 @@
 
 #include <stddef.h>
 #include <stdint.h>
+
+#ifndef LEVEL_H_INCLUDED
+#define LEVEL_H_INCLUDED
 typedef enum{
 	NONE,
 	WALL,
@@ -8,14 +11,15 @@ typedef enum{
 
 typedef struct{
 	Tiles* level;
-	int* bees;
+	uint16_t* bees;
 	size_t number_of_bees;
-	int* flowers;
+	uint16_t* flowers;
 	size_t number_of_flowers;
 	uint8_t width;
 	uint8_t height;
 } Level;
 
 
-/// Gets Level from the ones defined in code.
-Level GetLevel(int index);
+/// Gets Level from a Level file
+Level LoadLevelFromFile(char* filename);
+#endif

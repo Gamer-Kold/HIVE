@@ -1,30 +1,25 @@
 #include "raylib.h"
 #include "level.h"
-
-
-typedef struct{} GameState;
-
-const Color level_colors[] = {BLACK, YELLOW, PINK, WHITE};
-void DrawLevel(Level level){
-	for(int i = 0; i < level.width; i++){
-		for(int j = 0; j < level.height; j++){
-		Tiles tile = level.level[(j * level.height) + i];
-			DrawRectangle(i * 50 + 5, j * 50 + 5, 50 - 10, 50 - 10, level_colors[tile]);
-		}
-	}
-}
-
+#include "dlfcn.h"
+#include <assert.h>
+#include <stdlib.h>
+#include "plug_main.h"
 
 int main(){
 	InitWindow(500, 500, "HIVE");
-	GameState game_state = {0};
+	GameState* state = malloc(sizeof(GameState));
+	void* plugin_handle = dlopen("build/plug.so", RTLD_NOW);
+	TraceLog(LOG_INFO, "%s", dlerror());
+	assert((plugin_handle != NULL) && "COULD NOT LOAD S.O. TRY AGAIN");
+
+	void (*init)(GameState*) = dlsym(plugin_handle, "plug_init");
+	assert((init != NULL) && "COULD NOT LOAD S.O. TRY AGAIN");
+	void (*draw)(GameState*) = dlsym(plugin_handle, "plug_draw");
+	assert((draw != NULL) && "COULD NOT LOAD S.O. TRY AGAIN");
+	init(state);
+
 	while(!WindowShouldClose()){
-		BeginDrawing();
-		ClearBackground(BLACK);
-		game_state = UpdateGameState(game_state);
-		DrawLevel(GetLevel(0));
-		DrawGameState(game_state);
-		EndDrawing();
+		draw(state);
 	}
 
 	CloseWindow();
