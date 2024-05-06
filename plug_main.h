@@ -4,5 +4,6 @@
 typedef struct{
 	Level current_level;
 	char* current_level_file;
+	int something;
 } GameState;
 #endif

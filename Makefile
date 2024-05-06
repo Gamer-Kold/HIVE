@@ -1,15 +1,21 @@
 CC := cc
-CFLAGS := -g -I./include -lraylib -lm -L./lib
+CFLAGS := -g -fPIC -I./include -Wall -Wextra -lraylib -lm -L./lib
 
+build/plug.so: build/plug_main.o build/level.o
+	$(CC) $^ -shared -o build/plug.so $(CFLAGS) 
 
-build/main: build/main.o build/level.o
-	$(CC) $^ -o build/main $(CFLAGS) 
+build/main: main.c
+	$(CC) $< -o $@ -Wall -Wextra -g -I./include
 
-build/main.o: main.c
-	$(CC) -c $< -o $@ $(CFLAGS)
+build/plug_main.o: plug_main.c plug_main.h
+	$(CC) $(CFLAGS) -c $< -o $@ 
+build/level.o: level.c level.h
+	$(CC) $(CFLAGS) -c $< -o $@ 
 
-build/level.o: level.c
-	$(CC) -c $< -o $@ $(CFLAGS)
-
-run: build/main
+run: build/main build/plug.so
 	./build/main
+debug: build/main build/plug.so
+	gdb ./build/main
+
+clean: 
+	rm ./build/*
