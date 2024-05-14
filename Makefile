@@ -7,9 +7,9 @@ build/plug.so: build/plug_main.o build/level.o
 build/main: main.c
 	$(CC) $< -o $@ -Wall -Wextra -g -I./include
 
-build/plug_main.o: plug_main.c plug_main.h
+build/plug_main.o: plug_main.c types.h
 	$(CC) $(CFLAGS) -c $< -o $@ 
-build/level.o: level.c level.h
+build/level.o: level.c types.h
 	$(CC) $(CFLAGS) -c $< -o $@ 
 
 run: build/main build/plug.so

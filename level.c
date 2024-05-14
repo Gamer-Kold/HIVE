@@ -1,4 +1,4 @@
-#include "level.h"
+#include "types.h"
 #include "stb_image.h"
 #include <assert.h>
 #include <stdlib.h>
