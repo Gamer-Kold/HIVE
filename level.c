@@ -28,7 +28,7 @@ Level LoadLevelFromFile(char* filename){
 		uint32_t blue = data[base_index + 1];
 		uint32_t green = data[base_index + 2];
 		uint32_t alpha = data[base_index + 3];
-		uint32_t pixel_color = (red << 24) + (blue << 16) + (green << 8) + alpha;
+		uint32_t pixel_color = (red << 24) | (blue << 16) | (green << 8) | alpha;
 		if(pixel_color == NONE_COL) lvl_tiles[i] = NONE;
 		else if(pixel_color == WALL_COL) lvl_tiles[i] = WALL;
 		else if(pixel_color == BEE_COL){ 
