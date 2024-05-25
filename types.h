@@ -52,10 +52,13 @@ typedef struct{
 
 
 typedef struct{
-	/// if Input should be processed
+	/// if *any* key is pressed
 	bool is_key_pressed;
+	/// Is a direction key pressed.
+	bool is_dir_key_pressed;
 	/// Input direction that the player has pressed down
 	Dir input_dir;
+
 } InputState;
 
 /// Gets Level from a Level file

@@ -6,6 +6,7 @@ const Color level_colors[] = {BLACK, WHITE};
 InputState GetInputState(){
 	InputState state = {0};
 	state.is_key_pressed = (GetKeyPressed() != 0);
+	state.is_dir_key_pressed = true;
 	if(IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP)){
 		state.input_dir = DIR_UP;
 	}
@@ -17,6 +18,9 @@ InputState GetInputState(){
 	}
 	else if(IsKeyPressed(KEY_D) || IsKeyPressed(KEY_RIGHT)){
 		state.input_dir = DIR_RIGHT;
+	}
+	else{
+		state.is_dir_key_pressed = false;
 	}
 	return state;
 }
@@ -76,7 +80,7 @@ uint16_t GetNextOpenSpaceInDirection(Level lvl, uint16_t initial_position, Dir d
 }
 
 void UpdateGameState(GameState* state, InputState input){
-	if(input.is_key_pressed && state->tag == GAMESTATE_IN_LEVEL){
+	if(input.is_dir_key_pressed && state->tag == GAMESTATE_IN_LEVEL){
 		LevelState lvl_state = state->value.lvl_state;
 		size_t number_of_bees_on_flowers = 0;
 		for(uint16_t i = 0; i < lvl_state.current_level.number_of_bees; i++){
