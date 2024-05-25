@@ -16,7 +16,7 @@ Level LoadLevelFromFile(const char* filename){
 	assert((data != NULL) && "Data should not be null");
 	assert((n == 4) && "The level format requires 4 colors");
 
-	Tiles*    lvl_tiles = malloc(sizeof(Tiles) * size);
+	Tiles* lvl_tiles = malloc(sizeof(Tiles) * size);
 	uint16_t* bees = malloc(sizeof(uint16_t) * size);
 	size_t bee_count = 0;
 	uint16_t* flowers = malloc(sizeof(uint16_t) * size);

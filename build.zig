@@ -36,5 +36,6 @@ pub fn build(b: *std.Build) void {
         });
         exe.linkLibrary(raylib_lib);
     }
+    b.installFile("lvl_one.png", "./levels/lvl_one.png");
     b.installArtifact(exe);
 }

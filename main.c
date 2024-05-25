@@ -12,7 +12,7 @@ void* plugin_handle = NULL;
 void ReloadGame(){
 	if(plugin_handle != NULL){dlclose(plugin_handle);}
 
-	plugin_handle = dlopen("build/plug.so", RTLD_NOW);
+	plugin_handle = dlopen("./zig-out/lib/libplug.so", RTLD_NOW);
 	assert((plugin_handle != NULL) && "COULD NOT LOAD S.O. TRY AGAIN");
 
 	init = dlsym(plugin_handle, "game_init");

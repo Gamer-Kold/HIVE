@@ -101,7 +101,7 @@ void UpdateGameState(GameState* state, InputState input){
 	else if(state->tag == GAMESTATE_IN_MENU){
 		if(input.is_key_pressed){
 			state->tag = GAMESTATE_IN_LEVEL;
-			state->value.lvl_state = InitLevelState("lvl_one.png");
+			state->value.lvl_state = InitLevelState("zig-out/levels/lvl_one.png");
 		}
 	}
 }
@@ -139,3 +139,8 @@ int game_main(GameState* game_state){
 
 }
 
+int main(){
+	GameState state = {0};
+	game_init(&state);
+	game_main(&state);
+}
