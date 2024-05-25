@@ -5,7 +5,7 @@
 #include <string.h>
 
 
-Level LoadLevelFromFile(char* filename){
+Level LoadLevelFromFile(const char* filename){
 	const uint32_t NONE_COL = 0x000000FF;
 	const uint32_t WALL_COL = 0xFFFFFFFF;
 	const uint32_t BEE_COL = 0xFFFF00FF;

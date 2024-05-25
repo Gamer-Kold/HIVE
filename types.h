@@ -35,7 +35,7 @@ typedef enum {
 
 typedef struct{
 	Level current_level;
-	char* current_level_file;
+	const char* current_level_file;
 } LevelState;
 
 typedef struct{
@@ -59,5 +59,5 @@ typedef struct{
 } InputState;
 
 /// Gets Level from a Level file
-Level LoadLevelFromFile(char* filename);
+Level LoadLevelFromFile(const char* filename);
 #endif // TYPES_H_INCLUDED

@@ -5,7 +5,7 @@ const Color level_colors[] = {BLACK, WHITE};
 
 InputState GetInputState(){
 	InputState state = {0};
-	state.is_key_pressed = true;
+	state.is_key_pressed = (GetKeyPressed() != 0);
 	if(IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP)){
 		state.input_dir = DIR_UP;
 	}
@@ -17,7 +17,7 @@ InputState GetInputState(){
 	}
 	else if(IsKeyPressed(KEY_D) || IsKeyPressed(KEY_RIGHT)){
 		state.input_dir = DIR_RIGHT;
-	} else state.is_key_pressed = false;
+	}
 	return state;
 }
 
@@ -45,6 +45,13 @@ void DrawLevel(Level level){
 	}
 }
 
+LevelState InitLevelState(const char* level_file){
+	LevelState state = {0}; 
+	state.current_level = LoadLevelFromFile(level_file);
+	state.current_level_file = level_file;
+	return state;
+}
+
 void DrawMainMenu(MainMenuState state){
 	ClearBackground(BLACK);
 	const int scr_width = GetScreenWidth();
@@ -52,6 +59,8 @@ void DrawMainMenu(MainMenuState state){
 	const char* title_text = "HIVE";
 	const int font_size = 60;
 	DrawText(title_text, (int)(scr_width * 0.5) - (MeasureText(title_text, font_size) / 2), scr_height * 0.25, font_size, WHITE);
+	const char* press_text = "Press Any Key";
+	DrawText(press_text, (int)(scr_width * 0.5) - (MeasureText(press_text, font_size / 3) / 2), scr_height * 0.75, font_size / 3, WHITE);
 }
 
 uint16_t GetNextOpenSpaceInDirection(Level lvl, uint16_t initial_position, Dir direction){
@@ -61,6 +70,7 @@ uint16_t GetNextOpenSpaceInDirection(Level lvl, uint16_t initial_position, Dir d
 		pos += offsets[direction];
 	}
 	while(pos < (lvl.width * lvl.height) && lvl.level[pos] != WALL);
+
 	// we subtract the offset here because we've gone one over the obstacle
 	return pos - offsets[direction];
 }
@@ -88,6 +98,12 @@ void UpdateGameState(GameState* state, InputState input){
 			TraceLog(LOG_INFO, "-----------------");
 		}
 	}
+	else if(state->tag == GAMESTATE_IN_MENU){
+		if(input.is_key_pressed){
+			state->tag = GAMESTATE_IN_LEVEL;
+			state->value.lvl_state = InitLevelState("lvl_one.png");
+		}
+	}
 }
 
 
@@ -98,8 +114,6 @@ void game_init(GameState* state){
 size_t get_game_state_size(){
 	return sizeof(GameState);
 }
-
-
 
 int game_main(GameState* game_state){
 	InitWindow(500, 500, "HIVE");
@@ -124,3 +138,4 @@ int game_main(GameState* game_state){
 	return 0;
 
 }
+
