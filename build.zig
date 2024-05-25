@@ -32,10 +32,14 @@ pub fn build(b: *std.Build) void {
     } else {
         exe.addCSourceFiles(.{
             .files = &([_][]const u8{ "game_main.c", "level.c" }),
-            .flags = &([_][]const u8{ "-g", "-I./include/" }),
+            .flags = &([_][]const u8{"-I./include/"}),
         });
         exe.linkLibrary(raylib_lib);
     }
     b.installFile("lvl_one.png", "./levels/lvl_one.png");
     b.installArtifact(exe);
+
+    const run_exe = b.addRunArtifact(exe);
+    const run_step = b.step("run", "Run the game");
+    run_step.dependOn(&run_exe.step);
 }
