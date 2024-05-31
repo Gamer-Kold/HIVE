@@ -1,5 +1,5 @@
-#include "types.h"
-#include "stb_image.h"
+#include "../types.h"
+#include "../include/stb_image.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>

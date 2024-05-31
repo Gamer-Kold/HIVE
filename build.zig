@@ -13,6 +13,11 @@ pub fn build(b: *std.Build) void {
     const raylib_lib = raylib.addRaylib(b, target, optimize, .{}) catch unreachable;
 
     exe.linkLibC();
+    const game_files = [_][]const u8{
+        "game_main.c",
+        "level/level.c",
+        "level/level_file.c",
+    };
     if (optimize == .Debug) {
         exe.addCSourceFiles(.{
             .files = &([_][]const u8{"main.c"}),
@@ -24,14 +29,14 @@ pub fn build(b: *std.Build) void {
             .name = "plug",
         });
         game_lib.addCSourceFiles(.{
-            .files = &([_][]const u8{ "game_main.c", "level.c" }),
+            .files = &(game_files),
             .flags = &([_][]const u8{ "-g", "-fPIC", "-I./include" }),
         });
         game_lib.linkLibrary(raylib_lib);
         b.installArtifact(game_lib);
     } else {
         exe.addCSourceFiles(.{
-            .files = &([_][]const u8{ "game_main.c", "level.c" }),
+            .files = &(game_files),
             .flags = &([_][]const u8{"-I./include/"}),
         });
         exe.linkLibrary(raylib_lib);
